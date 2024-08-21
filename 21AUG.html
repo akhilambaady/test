@@ -3,18 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Example</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>CSV Example</title>
 </head>
 <body>
-    <button id="generatePDF">Generate PDF</button>
+    <button id="generateCSV">Generate CSV</button>
 
     <script>
-        document.getElementById('generatePDF').addEventListener('click', () => {
-            const { jsPDF } = window.jspdf; // Access jsPDF from the global window object
-            const doc = new jsPDF();
-            doc.text('Hello world!', 10, 10);
-            doc.save('sample.pdf');
+        document.getElementById('generateCSV').addEventListener('click', () => {
+            // Define your CSV data
+            const rows = [
+                ["Name", "Age", "Location"],
+                ["John Doe", "30", "New York"],
+                ["Jane Smith", "25", "Los Angeles"],
+                ["Alice Johnson", "35", "Chicago"]
+            ];
+
+            // Convert array of arrays to CSV format
+            const csvContent = rows.map(row => row.join(",")).join("\n");
+
+            // Create a blob with CSV data
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+            // Create a link element and set the href to the blob URL
+            const link = document.createElement('a');
+            if (link.download !== undefined) { // feature detection
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         });
     </script>
 </body>
